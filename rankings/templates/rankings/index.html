@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GradFocus</title>
+    {% load staticfiles %}
+    <!--card-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
+    <link rel="stylesheet" type="text/css" href="{% static 'rankings/style.css' %}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+    <style>
+      /* Make the image fully responsive */
+      .carousel-inner img {
+          width: 80%;
+          height: 50%;
+      }
+
+
+    </style>
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+    <!--navbar-->
+    <div class="container">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark navbar-fixed-top">
+            <ul class="navbar-nav mr-auto">
+                <li><a class="navbar-brand" href="{% url 'rankings:index' %}"><span class="badge badge-pill badge-info">GradFocus</span></a>
+                </li>
+                <li class="nav-item">
+                    <div class="dropdown">
+                        <a class="dropdown-toggle nav-link" href="{% url 'rankings:index' %}" role="button"
+                           id="dropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cities</a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% if all_cities %}
+                            {% for city in all_cities %}
+                            <a class="dropdown-item" href="{% url 'rankings:details' city.id %}">{{ city.name }}</a>
+                            {% endfor %}
+                            {% else %}
+                            <h3>No cities in the list, please add some cities.</h3>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <div class="dropdown">
+                        <a class="dropdown-toggle nav-link" href="{% url 'rankings:index2' %}" role="button"
+                           id="dropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Unis</a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% if all_cities %}
+                            {% for city in all_cities %}
+                            {% for uni in city.university_set.all %}
+                            <a class="dropdown-item" href="{% url 'rankings:details' uni.id %}">{{ uni.name }}</a>
+                            {% endfor %}
+                            {% endfor %}
+                            {% else %}
+                            <h3>No unis in the list, please add some uni.</h3>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+
+            <ul class="navbar-nav">
+                <li class="nav-item mr-auto">
+                    <a class="nav-link" href="{% url 'rankings:register' %}">New Student</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Logout</a>
+                </li>
+            </ul>
+
+        </nav>
+    </div>
+</head>
+
+<body>
+
+<!--carousel 2-->
+<div id="demo" class="carousel slide" data-ride="carousel">
+    <ul class="carousel-indicators">
+        <li data-target="#demo" data-slide-to="0" class="active"></li>
+        <li data-target="#demo" data-slide-to="1"></li>
+        <li data-target="#demo" data-slide-to="2"></li>
+    </ul>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="text-center"><img src="{% static 'rankings/images/is.jpg' %}" alt="IS Loading..." width="1100"
+                                          height="500"></div>
+            <div class="carousel-caption">
+                <h3 style="color:green;">Information Systems</h3>
+                <p style="color:green;">Why did the asynchronous chicken cross the road? <strong>get To side other the
+                    to</strong></p>
+
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="text-center"><img src="{% static 'rankings/images/ba.jpg' %}" alt="BA Loading..." width="1100"
+                                          height="500"></div>
+            <div class="carousel-caption">
+                <p style="color:#FF5D0B;">Because convincing them isn't enough, we need to confuse them too</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="text-center"><img src="{% static 'rankings/images/is.png' %}" alt="MBA Loading..." width="1100"
+                                          height="500"></div>
+            <div class="carousel-caption">
+                <h3>MBA</h3>
+                <p>test</p>
+            </div>
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="#demo" data-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </a>
+    <a class="carousel-control-next" href="#demo" data-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </a>
+</div>
+
+<!-------------------------------------------------cards-->
+<div class="container-fluid text-center">
+    <div class="title-arch"><b>All Programs</b>
+        <p>Our mission is to guide students to determine which school best suits their requirements</p></div>
+
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 project project-2 wow animated animated3 fadeInLeft text-center">
+        <div class="project-hover">
+            <h2>MS-BA</h2>
+            <hr/>
+            <p>Delves into understanding Data and using it to the advantage of your business</p>
+            <a href="#">See Program</a>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 project wow animated animated4 fadeInLeft text-center">
+        <div class="project-hover">
+            <h2>MS-IS</h2>
+            <prgrm/>
+            <hr/>
+            <p>Be effective planners, users and managers of Information technologies and systems</p>
+            <a href="#">See Program</a>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 project project-3 wow animated animated2 fadeInLeft text-center">
+        <div class="project-hover">
+            <h2>MBA</h2>
+            <hr/>
+            <p>Future leaders develop sophisticated analytical skills and a deep understanding of the way business
+                functions like marketing, finance and operations interact.</p>
+            <a href="#">See Program</a>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+</body>
+</html>
