@@ -1,14 +1,16 @@
 from django.views import generic
-from .models import City, University
+from django.db import connection
+from .models import City, University, Program, Student, Course
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, View
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .forms import UserForm
-from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class UserFormView(View):
+
     form_class = UserForm
     template_name = 'rankings/registration_form.html'
 
@@ -25,7 +27,6 @@ class UserFormView(View):
             # clean normalized data
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            email = form.cleaned_data['email']
 
             user.set_password(password)
             user.save()
@@ -42,7 +43,10 @@ class UserFormView(View):
         # to request.user.username to access this user's name etc
 
 
-class IndexView(generic.ListView):
+class IndexView(LoginRequiredMixin, generic.ListView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    model = City
     template_name = 'rankings/index.html'
     context_object_name = 'all_cities'
 
@@ -50,86 +54,171 @@ class IndexView(generic.ListView):
         return City.objects.all()
 
 
-class IndexView2(generic.ListView):
-    template_name = 'rankings/index.html'
-    context_object_name = 'all_universities'
+class IndexViewStudent(generic.ListView):
+    model = Student
+    template_name = 'rankings/student_index.html'
+    context_object_name = 'all_students'
 
     def get_queryset(self):
-        return University.objects.all()
+        return Student.objects.all()
 
 
-class DetailsView(generic.DetailView):
+# details views
+
+
+class DetailsView(LoginRequiredMixin, generic.DetailView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
     model = City
     template_name = 'rankings/details.html'
 
 
-class CityCreate(CreateView):
+class UniversityDetailsView(LoginRequiredMixin, generic.DetailView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    model = University
+    template_name = 'rankings/university_details.html'
+
+
+class ProgramDetailsView(LoginRequiredMixin, generic.DetailView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    model = Program
+    template_name = 'rankings/program_details.html'
+
+
+# class ISDetailsView(generic.DetailView):
+class ISListsView(LoginRequiredMixin, generic.ListView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    template_name = 'rankings/is_details.html'
+    context_object_name = 'all_is_ranks'
+
+    def get_queryset(self):
+        return Program.objects.select_related('university').filter(pName="IS")
+
+
+class BAListsView(LoginRequiredMixin, generic.ListView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    template_name = 'rankings/ba_details.html'
+    context_object_name = 'all_ba_ranks'
+
+    def get_queryset(self):
+        return Program.objects.select_related('university').filter(pName="BA")
+
+
+class MBAListsView(LoginRequiredMixin, generic.ListView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    template_name = 'rankings/mba_details.html'
+    context_object_name = 'all_mba_ranks'
+
+    def get_queryset(self):
+        return Program.objects.select_related('university').filter(pName="MBA")
+
+
+class MatchesView(LoginRequiredMixin, generic.ListView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    template_name = 'rankings/matches_details.html'
+    context_object_name = 'students_matches'
+
+    def get_queryset(self):
+        with connection.cursor() as cursor:
+            cursor.execute("select s.sfirstname,s.slastname, u.name ,p.pName, p.rank "
+                           "from rankings_student s,rankings_matches m,rankings_program p, rankings_university u "
+                           "where s.id=m.student_id and p.id=m.program_id and u.id=p.university_id")
+            row = cursor.fetchall()
+            return row
+
+
+class CityCreate(LoginRequiredMixin, CreateView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
     model = City
     # what fields do u want to user to fill
     fields = ['name', 'livingExpense', 'minTemperature', 'maxTemperature', 'logo']
 
 
-class CityUpdate(UpdateView):
+# update views
+class CityUpdate(LoginRequiredMixin, UpdateView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
     model = City
     fields = ['name', 'livingExpense', 'minTemperature', 'maxTemperature', 'logo']
 
 
-class CityDelete(DeleteView):
+class UniversityUpdate(LoginRequiredMixin, UpdateView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    model = University
+    fields = ['name', 'type', 'logo']
+
+
+class ProgramUpdate(LoginRequiredMixin, UpdateView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    model = Program
+    fields = ['pName', 'rank', 'acceptedGRE', 'acceptedGMAT', 'acceptedTOEFL', 'minCGPA', 'feePerCredit', 'avgWorkExp']
+
+
+class CourseUpdate(LoginRequiredMixin, UpdateView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    model = Course
+    fields = ['courseName', 'courseDescription']
+
+
+# Delete Functions
+class CityDelete(LoginRequiredMixin, DeleteView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
     model = City
     success_url = reverse_lazy('rankings:index')
 
 
-class UniversityCreate(CreateView):
+class UniversityDelete(LoginRequiredMixin, DeleteView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
     model = University
-
-    # https://stackoverflow.com/questions/10382838/how-to-set-foreignkey-in-createview
-    def form_valid(self, form):
-        form.instance.city = self.request.user
-        fields = ['name', 'type', 'logo', 'city_id', 'isFavourite']
-        return super(UniversityCreate, self).form_valid(form)
-        # def form_valid(self, form):
-        #     university = form.save(commit=False)
-        #     university.city = self.request.user
-        #     fields = ['name', 'livingExpense', 'minTemperature', 'maxTemperature']
-        #     # article.save()  # This is redundant, see comments.
-        #     return super(CreateArticle, self).form_valid(form)
+    success_url = reverse_lazy('rankings:index')
 
 
-class UniversityUpdate(UpdateView):
-    model = University
-    fields = ['name', 'type', 'logo', 'isFavourite']
-    # model = University
-    #
-    # def form_valid(self, form):
-    #     form.instance.city = self.request.user
-    #     return super(UniversityUpdate, self).form_valid(form)
+class ProgramDelete(LoginRequiredMixin, DeleteView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    model = Program
+    success_url = reverse_lazy('rankings:index')
 
 
-class UniversityDelete(DeleteView):
-    model = University
-    success_url = reverse_lazy('rankings:details')
+class CourseDelete(LoginRequiredMixin, DeleteView):
+    login_url = '/login_user/'
+    redirect_field_name = ''
+    model = Course
+    success_url = reverse_lazy()
 
-# def create_university(request, city_id):
-#     form = UniversityForm(request.POST or None, request.FILES or None)
-#     city = get_object_or_404(City, pk=city_id)
-#     if form.is_valid():
-#         city_university = city.university_set.all()
-#         for s in city_university:
-#             if s.university_title == form.cleaned_data.get("name"):
-#                 context = {
-#                     'city': city,
-#                     'form': form,
-#                     'error_message': 'You already added that university',
-#                 }
-#                 return render(request, 'rankings/create_university.html', context)
-#         university = form.save(commit=False)
-#         university.city = city
-#         university.type = type
-#
-#         university.save()
-#         return render(request, 'rankings/details.html', {'city': city})
-#     context = {
-#         'city': city,
-#         'form': form,
-#     }
-#     return render(request, 'rankings/create_university.html', context)
+
+# login logout
+
+def logout_user(request):
+    logout(request)
+    form = UserForm(request.POST or None)
+    context = {
+        "form": form,
+    }
+    return render(request, 'rankings/login.html', context)
+
+
+def login_user(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            return redirect('/')
+        else:
+            return render(request, 'rankings/login.html', {'error_message': 'Your account has been disabled'})
+    else:
+        return render(request, 'rankings/login.html', {'error_message': 'Invalid login'})

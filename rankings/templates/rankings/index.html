@@ -1,33 +1,43 @@
 <!DOCTYPE html>
+<!--todo sync db-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>GradFocus</title>
     {% load staticfiles %}
+    <link rel="shortcut icon" type="image/png" href="{%  static 'favicon.ico' %}"/>
     <!--card-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
           integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
     <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
     <link rel="stylesheet" type="text/css" href="{% static 'rankings/style.css' %}"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+
+    <!-- footer -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- footer -->
+
     <style>
       /* Make the image fully responsive */
       .carousel-inner img {
           width: 80%;
           height: 50%;
       }
-
-
     </style>
-    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
-    <!--navbar-->
+</head>
+
+<body>
+<!--navbar-->
     <div class="container">
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark navbar-fixed-top">
             <ul class="navbar-nav mr-auto">
-                <li><a class="navbar-brand" href="{% url 'rankings:index' %}"><span class="badge badge-pill badge-info">GradFocus</span></a>
+                <li><a class="navbar-brand active" href="{% url 'rankings:index' %}"><span
+                        class="badge badge-pill badge-info">GradFocus</span></a>
                 </li>
                 <li class="nav-item">
                     <div class="dropdown">
@@ -39,7 +49,33 @@
                             <a class="dropdown-item" href="{% url 'rankings:details' city.id %}">{{ city.name }}</a>
                             {% endfor %}
                             {% else %}
-                            <h3>No cities in the list, please add some cities.</h3>
+                            <p>No cities in the list, please add some cities.</p>
+                            {% endif %}
+                            <div class="dropdown-divider"></div>
+                            <form action="{% url 'rankings:city_add' %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-secondary btn-m btn-block">
+
+                                    <span class="glyphicon glyphicon-plus"></span>&nbsp; Add New City
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <div class="dropdown">
+                        <a class="dropdown-toggle nav-link" href="#" role="button"
+                           id="dropdown2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Unis</a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% if all_cities %}
+                            {% for city in all_cities %}
+                            {% for uni in city.university_set.all %}
+                            <a class="dropdown-item" href="{% url 'rankings:university_details' uni.id %}">{{ uni.name }}</a>
+                            {% endfor %}
+                            {% endfor %}
+                            {% else %}
+                            <p>No unis in the list, please add some uni.</p>
                             {% endif %}
                         </div>
                     </div>
@@ -47,43 +83,39 @@
 
                 <li class="nav-item">
                     <div class="dropdown">
-                        <a class="dropdown-toggle nav-link" href="{% url 'rankings:index2' %}" role="button"
-                           id="dropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Unis</a>
+                        <a class="dropdown-toggle nav-link" href="#" role="button"
+                           id="dropdown3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Program</a>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             {% if all_cities %}
                             {% for city in all_cities %}
                             {% for uni in city.university_set.all %}
-                            <a class="dropdown-item" href="{% url 'rankings:details' uni.id %}">{{ uni.name }}</a>
+                            {% for prog in uni.program_set.all %}
+                            <a class="dropdown-item" href="{% url 'rankings:program_details' prog.id %}">{{ uni.name }}
+                                : {{ prog.pName }}</a>
+                            {% endfor %}
                             {% endfor %}
                             {% endfor %}
                             {% else %}
-                            <h3>No unis in the list, please add some uni.</h3>
+                            <p>No programs in the list, please add some programs.</p>
                             {% endif %}
                         </div>
                     </div>
                 </li>
+
+                <li><a class="nav-item nav-link" href="{% url 'rankings:student_details' %}">Students</a></li>
+
+                <li><a class="nav-item nav-link" href="{% url 'rankings:matches_details' %}">Matches</a></li>
+
             </ul>
 
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
 
             <ul class="navbar-nav">
-                <li class="nav-item mr-auto">
-                    <a class="nav-link" href="{% url 'rankings:register' %}">New Student</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Logout</a>
-                </li>
+                <!--todo about for index-->
+                <li class="nav-item mr-auto"><a class="nav-link" href="{% url 'rankings:register' %}">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'rankings:logout_user' %}">Logout</a></li>
             </ul>
-
         </nav>
     </div>
-</head>
-
-<body>
-
 <!--carousel 2-->
 <div id="demo" class="carousel slide" data-ride="carousel">
     <ul class="carousel-indicators">
@@ -93,28 +125,24 @@
     </ul>
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <div class="text-center"><img src="{% static 'rankings/images/is.jpg' %}" alt="IS Loading..." width="1100"
+            <div class="text-center"><img src="{% static 'rankings/images/is3.jpg' %}" alt="IS Loading..." width="1100"
                                           height="500"></div>
             <div class="carousel-caption">
-                <h3 style="color:green;">Information Systems</h3>
-                <p style="color:green;">Why did the asynchronous chicken cross the road? <strong>get To side other the
-                    to</strong></p>
-
+                <p align="right"><strong>Business | Information | Analytics</strong></p>
             </div>
         </div>
         <div class="carousel-item">
-            <div class="text-center"><img src="{% static 'rankings/images/ba.jpg' %}" alt="BA Loading..." width="1100"
+            <div class="text-center"><img src="{% static 'rankings/images/ba2.jpg' %}" alt="BA Loading..." width="1100"
                                           height="500"></div>
             <div class="carousel-caption">
                 <p style="color:#FF5D0B;">Because convincing them isn't enough, we need to confuse them too</p>
             </div>
         </div>
         <div class="carousel-item">
-            <div class="text-center"><img src="{% static 'rankings/images/is.png' %}" alt="MBA Loading..." width="1100"
+            <div class="text-center"><img src="{% static 'rankings/images/MBA.png' %}" alt="MBA Loading..." width="1100"
                                           height="500"></div>
             <div class="carousel-caption">
-                <h3>MBA</h3>
-                <p>test</p>
+                <p>Minimum Brain Activity</p>
             </div>
         </div>
     </div>
@@ -128,7 +156,9 @@
 
 <!-------------------------------------------------cards-->
 <div class="container-fluid text-center">
-    <div class="title-arch"><b>All Programs</b>
+    <div class="title-arch mission">
+        <div class="elegantshd"><b>GradFocus</b></div>
+        <br>
         <p>Our mission is to guide students to determine which school best suits their requirements</p></div>
 
     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 project project-2 wow animated animated3 fadeInLeft text-center">
@@ -136,16 +166,15 @@
             <h2>MS-BA</h2>
             <hr/>
             <p>Delves into understanding Data and using it to the advantage of your business</p>
-            <a href="#">See Program</a>
+            <a href="{% url 'rankings:ba_details' %}">See Program</a>
         </div>
     </div>
     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 project wow animated animated4 fadeInLeft text-center">
         <div class="project-hover">
             <h2>MS-IS</h2>
-            <prgrm/>
             <hr/>
             <p>Be effective planners, users and managers of Information technologies and systems</p>
-            <a href="#">See Program</a>
+            <a href="{% url 'rankings:is_details' %}">See Program</a>
         </div>
     </div>
     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 project project-3 wow animated animated2 fadeInLeft text-center">
@@ -154,11 +183,60 @@
             <hr/>
             <p>Future leaders develop sophisticated analytical skills and a deep understanding of the way business
                 functions like marketing, finance and operations interact.</p>
-            <a href="#">See Program</a>
+            <a href="{% url 'rankings:mba_details' %}">See Program</a>
         </div>
     </div>
     <div class="clearfix"></div>
 </div>
 
+<br>
+<br>
+
+<footer>
+    <div class="container-fluid bg-primary py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="row py-0">
+                        <div class="col-sm-1 hidden-md-down">
+                            <a class="bg-circle bg-info" href="#">
+                                <i class="fa fa-2x fa-fw fa-address-card" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <div class="col-sm-11 text-white">
+                            <div><h4>  <span class="header-font">G</span>rad<span class="header-font">F</span>ocus</h4>
+                                <p>   <span class="header-font">@L</span>ocal<span class="header-font">H</span>ost</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="d-inline-block">
+                        <div class="bg-circle-outline d-inline-block" style="background-color:#3b5998">
+                            <a href="https://www.linkedin.com/in/anish-hadkar-564797147/"><i
+                                    class="fa fa-2x fa-fw fa-facebook text-white"></i>
+                            </a>
+                        </div>
+                        <div class="bg-circle-outline d-inline-block" style="background-color:#4099FF">
+                            <a href="https://www.linkedin.com/in/anish-hadkar-564797147/">
+                                <i class="fa fa-2x fa-fw fa-twitter text-white"></i></a>
+                        </div>
+
+                        <div class="bg-circle-outline d-inline-block" style="background-color:#0077B5">
+                            <a href="https://www.linkedin.com/in/anish-hadkar-564797147/">
+                                <i class="fa fa-2x fa-fw fa-linkedin text-white"></i></a>
+                        </div>
+                        <div class="bg-circle-outline d-inline-block" style="background-color:#d34836">
+                            <a href="https://github.com/hadkarAnish/GradFocus">
+                                <i class="fa fa-2x fa-fw fa-github text-white " aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!--/.footer-->
+<p class="text-center"> Copyright © Anish Hadkar 2017. All right reserved. </p>
 </body>
 </html>

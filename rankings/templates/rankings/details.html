@@ -1,9 +1,8 @@
 {% extends 'rankings/base2.html' %}
 {% block title %}GradFocus: {{ city }}{% endblock %}
-{% block city_active %}active{% endblock %}
 
 {% block body %}
-<div class="container-fluid university-container">
+<div class="container-fluid">
     <div class="row">
         <!-- Left City Info -->
         <div class="col-sm-4 col-md-3">
@@ -16,14 +15,12 @@
                         <h3>No image to display</h3>
                         {% endif %}
                     </a>
-                    <h1>
-                        <center><i><strong>{{ city.name }}</strong></i></center>
-                    </h1>
+                    <center><h1><h9>{{ city.name }}</h9></h1></center>
                     <h3>Temperature range</h3>
                     <h4>{{ city.minTemperature }} : {{ city.maxTemperature }}</h4>
                     <h3>Expenses</h3>
                     <h4><i>{{ city.livingExpense }}</i></h4>
-                    <h3>
+                    <center>
                         <form action="{% url 'rankings:city_update' city.id %}" method="post" style="display: inline;">
                             {% csrf_token %}
                             <input type="hidden" name="city_id" value="{{ city.id }}"/>
@@ -31,6 +28,7 @@
                                 <span class="glyphicon glyphicon-pencil"></span>&nbsp; Update City
                             </button>
                         </form>
+                        &nbsp;&nbsp;
                         <form action="{% url 'rankings:city_delete' city.id %}" method="post" style="display: inline;">
                             {% csrf_token %}
                             <input type="hidden" name="city_id" value="{{ city.id }}"/>
@@ -38,7 +36,16 @@
                                 <span class="glyphicon glyphicon-remove"></span>&nbsp; Delete
                             </button>
                         </form>
-                    </h3>
+                    </center>
+                    <br>
+
+                    <form action="{% url 'rankings:city_add' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+
+                        <button type="submit" class="btn btn-primary btn-m btn-block">
+                            <span class="glyphicon glyphicon-plus"></span>&nbsp; Add New City
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -46,9 +53,9 @@
         <!-- Right University Info -->
         <div class="col-sm-8 col-md-9">
 
-            <ul class="nav nav-pills" style="margin-bottom: 10px;">
-                <li role="presentation" class="active"><a href="{% url 'rankings:details' city.id %}">View All</a></li>
-                <li role="presentation"><a href="{% url 'rankings:university_add' %}">Add University</a></li>
+            <ul class="nav nav-pills">
+                <li role="presentation"><a href="{% url 'admin:rankings_university_changelist' %}">Add University</a>
+                </li>
             </ul>
 
             <div class="panel panel-default">
@@ -60,7 +67,20 @@
                     <p><strong>{{ error_message }}</strong></p>
                     {% endif %}
 
-                    <table class="table">
+                    <script>
+                        $(document).ready(function() {
+                            var table = $('#example').DataTable( {
+                                lengthChange: false,
+                                buttons: [ 'copy', 'excel', 'pdf', 'colvis' ]
+                            } );
+
+                            table.buttons().container()
+                                .appendTo( '#example_wrapper .col-md-6:eq(0)' );
+                        } );
+
+                    </script>
+
+                    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                         <tr>
                             <th>University</th>
@@ -73,20 +93,14 @@
                         {% for university in city.university_set.all %}
                         <tr>
                             <td>{{ university.name }}</td>
-                            <td>
-                                {{ university.type }}
-                                <!--<a target="_blank" href="{{ university.type.url }}">-->
-                                <!--<button type="button" class="btn btn-success btn-xs">-->
-                                <!--<span class="glyphicon glyphicon-play"></span>&nbsp; Play-->
-                                <!--</button>-->
-                                <!--</a>-->
-                            </td>
+                            <td>{{ university.type }}</td>
                             <td>
                                 <a href="#" class="btn-favorite"><span
                                         class="glyphicon glyphicon-star {% if university.isFavorite %}active{% endif %}"></span></a>
                             </td>
                             <td>
-                                <form action="#" method="post" style="display: inline;">
+                                <form action="{% url 'rankings:university_update' university.id %}" method="post"
+                                      style="display: inline;">
                                     {% csrf_token %}
                                     <input type="hidden" name="university_id" value="{{ university.id }}"/>
                                     <button type="submit" class="btn btn-default btn-sm">
