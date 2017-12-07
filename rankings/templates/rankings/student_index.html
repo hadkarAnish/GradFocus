@@ -1,0 +1,79 @@
+{% extends 'rankings/base2.html' %}
+{% block title %}GradFocus: Student{% endblock %}
+
+{% block body %}
+<div class="container-fluid center-block">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+
+            <div class="container">
+                <button type="button" class="btn btn-info"><a href="{% url 'admin:rankings_matches_changelist' %}">Add
+                    Students</a></button>
+                <button type="button" class="btn btn-info"><a href="{% url 'rankings:matches_details' %}">Check Student
+                    matches</a></button>
+            </div>
+
+            <br>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <center><h3>Students</h3></center>
+                    {% if error_message %}
+                    <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+
+                    <script>
+                        $(document).ready(function() {
+                            var table = $('#example').DataTable( {
+                                lengthChange: false,
+                                buttons: [ 'copy', 'excel', 'pdf', 'colvis' ]
+                            } );
+
+                            table.buttons().container()
+                                .appendTo( '#example_wrapper .col-md-6:eq(0)' );
+                        } );
+
+                    </script>
+                    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Date of Birth</th>
+                            <th>Phone Number</th>
+                            <th>Email ID</th>
+                            <th>GRE Score</th>
+                            <th>GMAT Score</th>
+                            <th>TOEFL Score</th>
+                            <th>CGPA</th>
+                            <th>Work Exp</th>
+                            <th>Undergrad Stream</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for a1 in all_students %}
+                        <tr>
+                            <td>{{ a1.id }}</td>
+                            <td>{{ a1.sFirstName }}</td>
+                            <td>{{ a1.sLastName }}</td>
+                            <td>{{ a1.sDateOfBirth }}</td>
+                            <td>{{ a1.sPhoneNumber }}</td>
+                            <td>{{ a1.sEmailId }}</td>
+                            <td>{{ a1.sGRE }}</td>
+                            <td>{{ a1.sGMAT }}</td>
+                            <td>{{ a1.sTOEFL}}</td>
+                            <td>{{ a1.sCGPA }}</td>
+                            <td>{{ a1.sWorkExp }}</td>
+                            <td>{{ a1.sUnderGradStream }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

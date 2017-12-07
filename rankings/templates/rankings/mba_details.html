@@ -1,0 +1,66 @@
+{% extends 'rankings/base2.html' %}
+{% block title %}GradFocus: MBA rankings{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Program Info -->
+        <div class="col-sm-8 col-md-10">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>MBA Program info</h3>
+                    {% if error_message %}
+                    <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+
+                    <script>
+                        $(document).ready(function() {
+                            var table = $('#example').DataTable( {
+                                lengthChange: false,
+                                buttons: [ 'copy', 'excel', 'pdf', 'colvis' ]
+                            } );
+
+                            table.buttons().container()
+                                .appendTo( '#example_wrapper .col-md-6:eq(0)' );
+                        } );
+
+                    </script>
+                    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>University</th>
+                            <th>Program</th>
+                            <th>Rank</th>
+                            <th>Accepted GRE Score</th>
+                            <th>Accepted GMAT Score</th>
+                            <th>Accepted TOEFL Score</th>
+                            <th>Minimum CGPA Required</th>
+                            <th>Fee Per Credit</th>
+                            <th>Avg Work Exp of Admitted Student</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% load app_filters %}
+                        {% for program in all_mba_ranks %}
+                        <tr>
+                            <td>{{ program.university_id|get_parent_university }}</td>
+                            <td>{{ program.pName }}</td>
+                            <td>{{ program.rank }}</td>
+                            <td>{{ program.acceptedGRE }}</td>
+                            <td>{{ program.acceptedGMAT }}</td>
+                            <td>{{ program.acceptedTOEFL }}</td>
+                            <td>{{ program.minCGPA }}</td>
+                            <td>{{ program.feePerCredit }}</td>
+                            <td>{{ program.avgWorkExp }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

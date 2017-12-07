@@ -1,0 +1,126 @@
+{% extends 'rankings/base2.html' %}
+{% block title %}GradFocus: {{ program.pName }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left Info -->
+        <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <!--todo {{ university.name }}-->
+                    <center>
+                        <h9>{{ program.pName }}</h9>
+                    </center>
+                    <h4>Rank: {{ program.rank }}</h4>
+                    <h5>Accepted GRE score: {{ program.acceptedGRE }}</h5>
+                    <h5>Accepted GMAT score: {{ program.acceptedGMAT }}</h5>
+                    <h5>Accepted TOEFL score: {{ program.acceptedTOEFL }}</h5>
+                    <h5>Min. CGPA req: {{ program.minCGPA }}</h5>
+                    <h5>Fee Per Credit: {{ program.feePerCredit }}</h5>
+                    <h5>Avg Work Experience: {{ program.avgWorkExp }}</h5>
+                    <br>
+
+                    <center>
+                        <form action="{% url 'rankings:program_update' program.id %}" method="post"
+                              style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="program_id" value="{{ program.id }}"/>
+                            <button type="submit" class="btn btn-success btn-xs">
+                                <span class="glyphicon glyphicon-pencil"></span>&nbsp; Update Program
+                            </button>
+                        </form>
+                        &nbsp;&nbsp;
+                        <form action="{% url 'rankings:program_delete' program.id %}" method="post"
+                              style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="program_id" value="{{ program.id }}"/>
+                            <button type="submit" class="btn btn-danger btn-xs">
+                                <span class="glyphicon glyphicon-remove"></span>&nbsp; Delete
+                            </button>
+                        </form>
+                    </center>
+                    <br>
+
+                    <form action="{% url 'admin:rankings_program_changelist' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-m btn-block">
+                            <span class="glyphicon glyphicon-plus"></span>&nbsp; Add New Program
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Info -->
+        <div class="col-sm-8 col-md-9">
+
+            <ul class="nav nav-pills">
+                <li role="presentation"><a href="{% url 'admin:rankings_course_changelist' %}">Add Program</a></li>
+            </ul>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>All Courses</h3>
+
+                    {% if error_message %}
+                    <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+                    <script>
+                        $(document).ready(function() {
+                            var table = $('#example').DataTable( {
+                                lengthChange: false,
+                                buttons: [ 'copy', 'excel', 'pdf', 'colvis' ]
+                            } );
+
+                            table.buttons().container()
+                                .appendTo( '#example_wrapper .col-md-6:eq(0)' );
+                        } );
+
+                    </script>
+
+                    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Course Description</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for course in program.course_set.all %}
+                        <tr>
+                            <!--todo add uni name details-->
+                            <td>{{ course.courseName }}</td>
+                            <td>{{ course.courseDescription }}</td>
+                            <td>
+                                <form action="{% url 'rankings:course_update' course.id %}" method="post"
+                                      style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="course_id" value="{{ course.id }}"/>
+                                    <button type="submit" class="btn btn-default btn-sm">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                    </button>
+                                </form>
+                                <form action="{% url 'rankings:course_delete' course.id %}" method="post"
+                                      style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="course_id" value="{{ course.id }}"/>
+                                    <button type="submit" class="btn btn-default btn-sm">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
