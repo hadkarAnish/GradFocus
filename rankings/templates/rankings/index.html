@@ -55,7 +55,7 @@
                             <form action="{% url 'rankings:city_add' %}" method="post" style="display: inline;">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-secondary btn-m btn-block">
-                                    &nbsp; Add New City
+                                    &nbsp; <i class="fa fa-plus-circle" aria-hidden="true"></i>   New City
                                 </button>
                             </form>
                         </div>
@@ -111,7 +111,7 @@
             <ul class="navbar-nav">
                 <!--todo about for index-->
                 <li class="nav-item mr-auto"><a class="nav-link" href="{% url 'rankings:register' %}">Register</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'rankings:logout_user' %}">Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'rankings:logout_user' %}"><i class="fa fa-power-off" aria-hidden="true"></i></a></li>
             </ul>
         </nav>
     </div>
