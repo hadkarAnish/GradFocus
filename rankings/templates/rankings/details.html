@@ -9,7 +9,7 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <a href="{% url 'rankings:details' city.id %}">
-                        {% if city.id %}
+                        {% if city.logo %}
                         <img src="{{ city.logo.url }}" class="img-responsive img-thumbnail">
                         {% else %}
                         <h3>No image to display</h3>
