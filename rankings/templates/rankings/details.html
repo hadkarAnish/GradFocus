@@ -85,7 +85,6 @@
                         <tr>
                             <th>University</th>
                             <th>Type</th>
-                            <th>Favourite</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -94,10 +93,6 @@
                         <tr>
                             <td>{{ university.name }}</td>
                             <td>{{ university.type }}</td>
-                            <td>
-                                <a href="#" class="btn-favorite"><span
-                                        class="glyphicon glyphicon-star {% if university.isFavorite %}active{% endif %}"></span></a>
-                            </td>
                             <td>
                                 <form action="{% url 'rankings:university_update' university.id %}" method="post"
                                       style="display: inline;">
