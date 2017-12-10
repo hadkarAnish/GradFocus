@@ -47,4 +47,6 @@ urlpatterns = [
 
     url(r'^student/$', views.IndexViewStudent.as_view(), name='student_details'),
     url(r'^matches/$', views.MatchesView.as_view(), name='matches_details'),
+
+    url(r'^about1/', views.AboutPageView.as_view(), name='about1'),
 ]

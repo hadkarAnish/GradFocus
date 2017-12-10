@@ -1,0 +1,87 @@
+{% extends 'rankings/base2.html' %}
+{% block title %}GradFocus: About Us{% endblock %}
+
+{% block body %}
+<style>
+.city {
+    background-color: tomato;
+    color: white;
+    padding: 10px;
+}
+p.anish {
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+h2 {
+    width:50%;
+    padding: 10px 20px 10px 10px;
+    margin-right: -20px;
+    -moz-box-shadow: -2px 2px 0 rgba(0,0,0,0.1);
+    -webkit-box-shadow: -2px 2px 0 rgba(0,0,0,0.1);
+    -o-box-shadow: -2px 2px 0 rgba(0,0,0,0.1);
+    box-shadow: -2px 2px 0 rgba(0,0,0,0.1);
+    background:red;
+    position:relative;
+}
+
+ h2:before {
+   content:'';
+   width: 0;
+    height: 0;
+    border-color: #666 transparent transparent #666;
+    border-style: solid;
+    border-width: 5px 10px;
+    position: absolute;
+    right: 0;
+    bottom: -10px;
+}
+</style>
+
+
+<div class="container-fluid center-block">
+    <div class="row">
+        <h2 class="city">About Us</h2>
+        <div class="col-sm-12 col-md-12">
+            <div class="container-fluid center-block">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="jumbotron">
+
+                            <center><p class="anish"><strong><i>Mission statement</i></strong></p>
+                            <p class="anish">Our mission is to guide students to determine which school best suits
+                            their requirements</p></center>
+                            <hr>
+                            <center><p class="anish"><strong><i>Mission objective</i></strong></p>
+                                <p class="anish">Our mission is to guide students to determine which school best suits their requirements. Our website
+                                    provides a list of universities for three streams – MBA, MSIS and MSBA. It has the information of all the universities
+                                    listed, based on rank. The interested customer’s profile is stored on the website once he’s registered. The customer
+                                    can access the university information and based on his credentials, the customer can compare universities and their
+                                    ranks which are suitable for his profile. The GradFocus consultants will provide the customer with the list of most
+                                    appropriate colleges based on their overall profile.</p></center>
+                            <hr>
+
+                            <center><p class="anish"><strong><i>Information System analysts and Database Designer</i></strong></p>
+                                <p class="anish">Ridhima Amruthesh, Shaurya Chaturvedi, Anish Hadkar, Kiruthika Sankaran, Abhinav Tummala</p>
+                            </center>
+                            <hr>
+
+                            <center><p class="anish"><strong><i>Database and Application/Website Developer</i></strong></p>
+                                <p class="anish">Anish Hadkar</p>
+                            </center>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

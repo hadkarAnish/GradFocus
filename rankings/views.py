@@ -2,6 +2,7 @@ from django.views import generic
 from django.db import connection
 from .models import City, University, Program, Student, Course
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, View
+from django.views.generic import TemplateView
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -197,6 +198,10 @@ class CourseDelete(LoginRequiredMixin, DeleteView):
     redirect_field_name = ''
     model = Course
     success_url = reverse_lazy()
+
+
+class AboutPageView(TemplateView):
+    template_name = 'rankings/about_details.html'
 
 
 # login logout

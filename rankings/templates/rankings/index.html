@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--todo sync db-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -28,6 +27,12 @@
           width: 80%;
           height: 50%;
       }
+
+      .scrollable-menu {
+        height: auto;
+        max-height: 400px;
+        overflow-x: hidden;
+        }
     </style>
 </head>
 
@@ -43,7 +48,7 @@
                     <div class="dropdown">
                         <a class="dropdown-toggle nav-link" href="{% url 'rankings:index' %}" role="button"
                            id="dropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cities</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
                             {% if all_cities %}
                             {% for city in all_cities %}
                             <a class="dropdown-item" href="{% url 'rankings:details' city.id %}">{{ city.name }}</a>
@@ -66,7 +71,7 @@
                     <div class="dropdown">
                         <a class="dropdown-toggle nav-link" href="#" role="button"
                            id="dropdown2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Unis</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
                             {% if all_cities %}
                             {% for city in all_cities %}
                             {% for uni in city.university_set.all %}
@@ -84,7 +89,7 @@
                     <div class="dropdown">
                         <a class="dropdown-toggle nav-link" href="#" role="button"
                            id="dropdown3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Program</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
                             {% if all_cities %}
                             {% for city in all_cities %}
                             {% for uni in city.university_set.all %}
@@ -109,7 +114,7 @@
 
 
             <ul class="navbar-nav">
-                <!--todo about for index-->
+                <li class="nav-item mr-auto"><a class="nav-link" href="{% url 'rankings:about1' %}">About Us</a></li>
                 <li class="nav-item mr-auto"><a class="nav-link" href="{% url 'rankings:register' %}">Register</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'rankings:logout_user' %}"><i class="fa fa-power-off" aria-hidden="true"></i></a></li>
             </ul>
@@ -198,7 +203,7 @@
                 <div class="col-md-7">
                     <div class="row py-0">
                         <div class="col-sm-1 hidden-md-down">
-                            <a class="bg-circle bg-info" href="#">
+                            <a class="bg-circle bg-info" href="{% url 'rankings:about1' %}">
                                 <i class="fa fa-2x fa-fw fa-address-card" aria-hidden="true"></i>
                             </a>
                         </div>
